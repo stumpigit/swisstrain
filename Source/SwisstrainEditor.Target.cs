@@ -1,0 +1,1 @@
+{'Target)': 'base(Target)\n\t{\n\t\tType = TargetType.Editor;\n\t\tDefaultBuildSettings = BuildSettingsVersion.V2;\n\t\tIncludeOrderVersion = EngineVersion.Version.Meta;\n\t\tExtraModuleNames.Add(', 'Swisstrain': ''}

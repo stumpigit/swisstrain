@@ -1,0 +1,1 @@
+[{'Target)': 'base(Target)\n\t{\n\t\tPCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;\n\t\n\t\tPublicDependencyModuleNames.AddRange(new string[] {'}, {}, 'PrivateDependencyModuleNames.Add("OnlineSubsystem']
