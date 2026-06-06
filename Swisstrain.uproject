@@ -14,10 +14,6 @@
     {
       "Name": "EnhancedInput",
       "Enabled": true
-    },
-    {
-      "Name": "Landscape",
-      "Enabled": true
     }
   ]
 }
