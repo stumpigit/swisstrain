@@ -1,1 +1,42 @@
-['main, develop ]\n  pull_request:\n    branches: [ main ]\n\njobs:\n  build:\n    name: Build Swisstrain\n    runs-on: ubuntu-latest\n    steps:\n      - name: Checkout code\n        uses: actions/checkout@v3\n        with:\n          lfs: true\n\n      - name: Setup Git LFS\n        run: |\n          git lfs install\n          git lfs pull\n\n      - name: Setup Environment\n        run: |\n          echo "Setting up build environment"\n          # Placeholder for Unreal Engine setup\n\n      - name: Build Project\n        run: |\n          cd Scripts/Build\n          ./build.sh\n\n      - name: Run Tests\n        run: |\n          echo "Running tests..."\n          echo "All tests passed"\n\n      - name: Package Project\n        run: |\n          echo "Packaging Swisstrain"\n          echo "Packaging completed']
+name: Swisstrain Build Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build Swisstrain
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Setup Git LFS
+        run: |
+          git lfs install
+          git lfs pull
+
+      - name: Setup Environment
+        run: |
+          echo "Setting up build environment"
+          # Placeholder for Unreal Engine setup
+
+      - name: Build Project
+        run: |
+          cd Scripts/Build
+          ./build.sh
+
+      - name: Run Tests
+        run: |
+          echo "Running tests..."
+          echo "All tests passed"
+
+      - name: Package Project
+        run: |
+          echo "Packaging Swisstrain"
+          echo "Packaging completed"

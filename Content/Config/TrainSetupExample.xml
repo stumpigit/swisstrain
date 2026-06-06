@@ -1,0 +1,44 @@
+<!-- Example Blueprint configuration for a train setup -->
+<!--
+This XML represents how a train would be configured in Unreal Engine's Blueprint system.
+In practice, this would be created visually in the editor, but is represented here for documentation.
+-->
+
+<TrainSetup>
+  <Description>
+    Example configuration showing how to set up a train with the Swisstrain simulation system
+  </Description>
+  
+  <Components>
+    <TrainActor>
+      <Name>MountainExpress</Name>
+      <TrackSpline>/Game/Tracks/MainLine.MainLine:TrackSplineComponent</TrackSpline>
+      <MaxSpeed>800.0</MaxSpeed>  <!-- 8 m/s for scenic mountain route -->
+      <Acceleration>150.0</Acceleration>  <!-- 1.5 m/s² gentle acceleration -->
+      <Deceleration>300.0</Deceleration>  <!-- 3 m/s² smooth braking -->
+      <StationStopTime>15.0</StationStopTime>  <!-- 15 seconds at each station -->
+      <ScheduledStations>
+        <Station>/Game/Stations/Zermatt.Zermatt:StationActor</Station>
+        <Station>/Game/Stations/Visp.Visp:StationActor</Station>
+        <Station>/Game/Stations/Bern.Bern:StationActor</Station>
+      </ScheduledStations>
+      <EnableCollisionAvoidance>true</EnableCollisionAvoidance>
+    </TrainActor>
+    
+    <TrafficController>
+      <Name>MainTrafficController</Name>
+      <RegisteredTrains>
+        <Train>MountainExpress</Train>
+        <Train>LocalShuttle</Train>
+      </RegisteredTrains>
+      <ReservationTimeout>30.0</ReservationTimeout>
+    </TrafficController>
+  </Components>
+  
+  <Notes>
+    - This configuration would be set up in Unreal Engine's editor
+    - Train movement parameters can be adjusted for different route characteristics
+    - Multiple trains can share the same traffic controller for collision avoidance
+    - Station placement is managed through the Track Editor tools from Phase 2
+  </Notes>
+</TrainSetup>
