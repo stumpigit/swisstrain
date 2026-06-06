@@ -1,105 +1,158 @@
-# Swisstrain V1 Scope and Authoring Mode Specification
+# Swisstrain V1 Specification
 
-## Overview
-This document defines the scope and authoring approach for Swisstrain V1, an editor-first Swiss landscape and rail sandbox.
+## 1. Produktdefinition
 
-## Key Decisions
+Swisstrain V1 ist eine **Sandbox zum Gestalten schöner Schweizer Landschaften und Bahntrassen**.
 
-### 1. Unreal Engine Version
-- **Unreal Engine 5.5** - Latest version with enhanced landscape and rail tools
-- Provides access to newest features and optimizations
-- Strong support for large open worlds and editor performance
+Der Schwerpunkt liegt auf:
 
-### 2. Authoring Mode
-- **Editor-First Tooling** - Primary development happens in Unreal Editor
-- Focus on editor experience with runtime as optional enhancement
-- All core systems should be editable and previewable without compilation
+- einer attraktiven Berglandschaft
+- einem guten Editor-Workflow im Unreal Editor
+- einfacher, befriedigender Zugbewegung auf selbst gebauten Strecken
 
-### 3. Target Platforms
-- **Primary**: Windows 10/11 (64-bit)
-- **Future**: Linux and macOS (support in later versions)
+Der Schwerpunkt liegt **nicht** auf Wirtschaft, Missionen oder komplexer Physik.
 
-### 4. Asset Policy
-- **Pragmatic Assets** - Mix of procedural generation and custom assets
-- Use of real-world Swiss landscape data where available
-- Efficient asset streaming for large landscapes
-- **LFS Integration**: Git LFS for large binary assets (textures, meshes, heightmaps)
+## 2. Harte Leitplanken
 
-### 5. Terrain Fidelity
-- **Hybrid approach**: swisstopo 1:1 base with artistic cleaning
-- **Base layer**: Accurate elevation data from Swiss topo surveys
-- **Detail layer**: Artistically enhanced for visual appeal
-- **LOD System**: Automatic LOD based on distance and importance
+Diese Punkte sind verbindlich:
 
-### 6. V1 Rail Types
-- **Standard Gauge Only**: Focus on normal railway (1435mm) for V1
-- Future versions will include narrow gauge and mountain railways
+1. **Unreal Engine 5.5**
+2. **Windows** als Zielplattform
+3. **Editor-first**: Tools im Unreal Editor, kein vollwertiger Ingame-Editor in V1
+4. **stylized-realistic cozy** Look
+5. **swisstopo-DHM als 1:1 Basis**, danach künstlerisch bereinigbar
+6. **nur normale Bahn** in V1
+7. **Blueprint-first**, aber C++ erlaubt für Basisklassen, Utilitys und Performance-kritische Teile
+8. **pragmatische Assets** sind erlaubt
+9. **Git LFS** ist Pflicht für große Binärdateien
+10. **Build-/CI-Gerüst minimal**, aber von Anfang an sauber anlegbar
+11. **Remote-Build-Modell**: finale Unreal-Editor-/Windows-Build-Schritte laufen auf einer separaten Windows-Maschine, nicht auf diesem Linux-Hermes-Host
 
-### 7. Blueprint/C++ Mix
-- **Blueprint-first** approach with targeted C++ where needed
-- UI, editor tools, and gameplay logic in Blueprints
-- Performance-critical systems and base classes in C++
-- Hybrid Approach:
-  - Landscape/Rail systems: C++ base with Blueprint customization layers
-  - Editor tools: Blueprint with C++ utility functions
-  - Simulation systems: C++ core with Blueprint configuration interfaces
+## 3. V1 Nicht-Ziele
 
-### 8. Repository and Build Conventions
-- **Git Workflow**: Feature branch with pull request model
-- **LFS Management**: 
-  - Textures (.png, .jpg, .tga) in LFS
-  - Meshes (.fbx) in LFS
-  - Heightmaps and large data files in LFS
-- **Directory Structure**:
-  ```
-  /Content
-    /Landscape  - Terrain and environment assets
-    /Rail       - Railway system assets and blueprints
-    /UI         - User interface elements
-    /Plugins    - Custom plugin modules
-    /Maps       - Level files
-  /Source       - C++ source files
-  /Docs         - Documentation
-  /Scripts      - Build and utility scripts
-  ```
-- **Build System**: Standard Unreal build process with custom automation scripts
-- **CI/CD**: Automated builds on push to main branches
-- **Minimal Build Scaffold**: Start with minimal viable build infrastructure and expand as needed
+Nicht in V1 bauen:
 
-## V1 Deliverables
+- Zahnradbahn
+- Standseilbahn
+- Seilbahn
+- Wirtschaftssimulation
+- Kampagne / Missionen
+- realistische Fahrdynamik
+- komplexe Signal- und Dispositionslogik
+- Multiplayer
+- vollwertige Betriebsplanung
 
-### Core Systems
-1. **Landscape System**
-   - Terrain generation from real data
-   - Sculpting tools for artistic enhancement
-   - Texturing and material system
+## 4. Phase 1 — Landschaft zuerst
 
-2. **Rail System**
-   - Track placement and editing system
-   - Standard gauge support
-   - Basic train physics
+### Ziel
 
-3. **Editor Tools**
-   - Landscape sculpting interface
-   - Rail placement tools
-   - Asset management UI
+Ein erster spielbarer / begehbarer / betrachtbarer Landschafts-Slice mit starkem Schweizer Charakter.
 
-4. **Simulation Framework**
-   - Basic train movement
-   - Simple scheduling system
-   - Camera and navigation controls
+### Muss enthalten
 
-### Technical Requirements
-- Support for landscapes up to 100km²
-- Up to 100km of railway tracks per map
-- Support for 50+ train assets with basic AI
-- 60 FPS on mid-range hardware (RTX 3070, Ryzen 5 5600X)
+- Import oder Vorbereitung des Zielterrains aus der angegebenen swisstopo-Bounding-Box
+- Terrain im Unreal-Landscape-Workflow
+- mindestens ein glaubwürdiger See oder Wasserbereich
+- Berg-/Talwirkung
+- grundlegende Materialschichten für Fels, Wiese, Wald, Schotter/Erde
+- Vegetation / Foliage-Grundsetup
+- Licht / Atmosphäre / Fog / Post-Process so, dass der Look bereits angenehm wirkt
+- Kamera-/Preview-Möglichkeit für Review
 
-### Documentation
-- Developer setup guide
-- Editor tool usage documentation
-- Plugin development guidelines
-- Asset creation workflows
+### Darf enthalten
 
-## Next Steps
-This specification provides the foundation for implementation. Downstream workers should use this document as the basis for their specialized tasks in landscape, rail, editor tools, and simulation systems.
+- artistisches Glätten, Formen oder Komponieren einzelner Bereiche
+- Platzhalter-Assets
+- vereinfachte Materialsysteme, solange sie hübsch und ausbaubar sind
+
+### Muss noch nicht enthalten
+
+- Schienenlogik
+- Simulation
+- finale Performance-Optimierung
+
+## 5. Phase 2 — Streckenbau-Editor
+
+### Ziel
+
+Ein angenehmer In-Editor-Workflow zum Bauen einer Bahntrasse auf der vorhandenen Landschaft.
+
+### Muss enthalten
+
+- Spline-basierte Streckenanlage
+- einfache Stations-/Haltepunkte oder Anker
+- Höhen- und Verlaufsregeln, die extremes Chaos vermeiden
+- sichtbare oder halbautomatische Behandlung von:
+  - Damm
+  - Einschnitt
+  - Brücke
+  - Tunnel
+- gutes visuelles Feedback beim Platzieren und Bearbeiten
+
+### Muss nicht enthalten
+
+- komplexe Weichenlogik
+- mehrere Spurweiten
+- realistische Bahnbaunormen
+- große Betriebslogik
+
+## 6. Phase 3 — Einfache Zugsimulation
+
+### Ziel
+
+Züge sollen die gebauten Strecken glaubwürdig und befriedigend abfahren.
+
+### Muss enthalten
+
+- Zug folgt Strecke
+- Halte an Stationen / Haltepunkten
+- einfache Geschwindigkeits- oder Fahrkurvenlogik
+- minimale Reservierung / Kollisionsvermeidung, falls mehrere Züge existieren
+- kamerataugliche Fahrt durch die Szene
+
+### Muss nicht enthalten
+
+- realistische Physik
+- Signaltechnik nach Vorbild
+- Rangierlogik
+- komplexer Fahrplan
+
+## 7. Build-Host-Modell
+
+### Verbindlicher Grundsatz
+
+- Finale **Windows-Builds** und Unreal-Editor-Arbeit müssen so vorbereitet werden, dass sie auf einer **separaten Windows-Maschine** laufen können.
+- Dieser Linux-Host ist für Orchestrierung, Datenvorbereitung, Skripte und Repo-Hygiene gedacht, **nicht** als finaler Unreal-Windows-Build-Host.
+- Eine Linux-VPS darf später für CI, Vorverarbeitung und Hilfsjobs genutzt werden, ist aber **nicht** das primäre Ziel für das finale Windows-Packaging in V1.
+
+## 8. Phase 4 — Integration und Repo-Hygiene
+
+### Ziel
+
+Das Projekt soll als sauber strukturiertes Unreal-Repo weiterentwickelbar sein.
+
+### Muss enthalten
+
+- sinnvolle Projekt-/Ordnerstruktur
+- `.gitattributes` / Git LFS Setup
+- minimale Build-/Automations-Skripte oder dokumentierte Hooks
+- Setup-Dokumentation für spätere Build-Machine
+- kurze Architektur- und Workflow-Doku
+
+## 9. Assignee-Regeln für das Board
+
+Erlaubte spezialisierten Worker für V1:
+
+- `swisstrain-terrain`
+- `swisstrain-track`
+- `swisstrain-sim`
+- `swisstrain-integrator`
+- `swisstrain-orchestrator`
+
+Keine neuen Fantasie-Assignees verwenden.
+
+## 10. Arbeitsmodus
+
+- bevorzugt **kleine, überprüfbare Schritte**
+- frühe visuelle Ergebnisse schlagen theoretische Vollständigkeit
+- wenn Architekturentscheide nicht den Kurs ändern, lieber pragmatisch entscheiden als blockieren

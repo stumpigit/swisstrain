@@ -1,40 +1,77 @@
-# Swisstrain Project Bootstrap
+# Swisstrain Bootstrap
 
-## Overview
-Swisstrain is an editor-first Swiss landscape and rail sandbox simulation. The project aims to create a realistic yet artistically enhanced simulation of Swiss mountain landscapes with functional railway systems using Unreal Engine 5.5.
+Stand: 2026-06-06
 
-## Project Goals
-- Create an immersive Swiss mountain landscape environment with stylized-realistic cozy visuals
-- Implement realistic railway systems that can be edited and customized
-- Provide an intuitive editor interface for landscape and rail development
-- Support both swisstopo 1:1 accurate representations and artistically cleaned terrains
-- Enable users to design, build, and simulate railway networks
+## Ziel
 
-## V1 Scope Considerations
+Swisstrain ist eine **editor-first Landschafts- und Streckenbau-Sandbox** für den Eigengebrauch.
 
-### Technology Stack
-- **Engine**: Unreal Engine 5.5
-- **Primary Language**: Blueprint-first with targeted C++ extensions
-- **Platforms**: PC (Windows 10/11 64-bit)
-- **Version Control**: Git with LFS for asset management
+Priorisierte Entwicklungsreihenfolge:
 
-### Core Features
-1. Swiss landscape rendering with mountain terrain
-2. Railway track placement and editing system (standard gauge only for V1)
-3. Basic train simulation mechanics
-4. Editor tools for landscape sculpting
-5. Asset management system
-6. Basic lighting and weather systems
+1. **Schöne 3D-Landschaft** im stilisierten, gemütlichen Schweizer Bergwelt-Stil
+2. **Bahntrassee-Editor** mit Bahnhöfen, Brücken, Tunnels, Einschnitten und Dämmen
+3. **Einfache Zugsimulation** auf den gebauten Strecken
 
-### Asset Policy
-- Pragmatic mix of procedural and custom assets
-- Use of real-world Swiss landscape data where available
-- Implementation of artistic enhancement options
-- Efficient asset streaming for large landscapes
-- Git LFS integration for large binary assets
+## Verbindliche Startentscheide
 
-### Development Approach
-- Editor-first development for content creation
-- Modular system design for extensibility
-- Clear separation of editor vs. runtime tooling (with runtime as optional enhancement)
-- Comprehensive documentation and examples
+- **Engine:** Unreal Engine 5.5
+- **Authoring-Modus:** Unreal-Editor-Tooling, kein Runtime-Editor in V1
+- **Zielplattform:** Windows
+- **Stil:** stylized-realistic cozy
+- **Terrain-Fidelity:** swisstopo 1:1 Basis, danach künstlerisch bereinigt
+- **V1 Schienenarten:** nur normale Bahn / Adhäsionsbahn
+- **Assets:** pragmatisch; Marketplace, Megascans und Platzhalter sind erlaubt
+- **Tech-Mix:** Blueprint-first, mit gezielten C++-Anteilen
+- **Git LFS:** ja
+- **Build-Gerüst:** ja, minimal von Anfang an
+
+## Nicht Teil von V1
+
+- Wirtschaft / Tycoon
+- Missionen / Kampagne
+- aufwendige Fahrphysik
+- Bergbahn, Zahnradbahn, Standseilbahn
+- komplexe Disposition oder realistische Betriebsregeln
+- vollwertiger Runtime-Editor
+
+## Repo / Arbeitsort
+
+- **GitHub:** https://github.com/stumpigit/swisstrain
+- **Lokales Repo:** `/root/workspace/swisstrain`
+
+## Build- und Authoring-Architektur
+
+- **Dieser Host ist nicht die Unreal-Build-Maschine.**
+- Die eigentliche Unreal-Authoring-/Build-Arbeit soll später auf einer **separaten Windows-Maschine** laufen.
+- Dieser Linux-Host dient primär für:
+  - Hermes/Kanban-Orchestrierung
+  - Repo- und Doku-Arbeit
+  - swisstopo-Datenbeschaffung und -Vorverarbeitung
+  - Skripte, Konvertierungen und Build-Vorbereitung
+- Eine reine Linux-VPS ist für das finale **Windows-Package von Unreal 5.5** nicht der Standardpfad und wird für V1 **nicht** als Ziel-Build-Umgebung vorausgesetzt.
+
+## Terrain-Ausschnitt
+
+DHM-Zielgebiet (EPSG:2056):
+
+- **top-left:** `2673957.58, 1216900.00`
+- **bottom-right:** `2689486.72, 1204462.45`
+
+## Multi-Agent-Rollen
+
+- `swisstrain-terrain` → Landschaft, Heightmap, Materialien, Wasser, Vegetation, Stimmung
+- `swisstrain-track` → Trassee-Editor, Stationsanker, Splines, Brücken/Tunnels, UX für Streckenbau
+- `swisstrain-sim` → einfache Zugbewegung, Stops, Reservierung, Kamerafahrt
+- `swisstrain-integrator` → Repo-Struktur, Unreal-Projekt-Hygiene, Git LFS, Doku, Build-/CI-Grundgerüst
+- `swisstrain-orchestrator` → Planung, Decomposition, Task-Routing
+
+## Grundsatz für V1
+
+Lieber ein **kleiner, wunderschöner, spaßiger Authoring-Slice** als ein breites, halbfertiges Simulationsspiel.
+
+Die ersten Worker sollen deshalb nicht maximal viele Systeme bauen, sondern zuerst ein belastbares, schönes Kerngefühl erzeugen:
+
+- **landschaftlich glaubwürdig**
+- **visuell anmächelig**
+- **beim Bauen angenehm**
+- **beim Zuschauen befriedigend**

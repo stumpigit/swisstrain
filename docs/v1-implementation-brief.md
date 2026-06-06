@@ -1,52 +1,84 @@
 # Swisstrain V1 Implementation Brief
 
-## Project Overview
-Swisstrain is an editor-first Swiss landscape and rail sandbox using Unreal Engine 5.5. The project enables users to create and simulate realistic Swiss mountain railways in an artistic environment.
+## Kurzfassung
 
-## Scope Resolution Summary
-- **Engine**: Unreal Engine 5.5
-- **Authoring**: Editor-first tooling with runtime as optional enhancement
-- **Platforms**: Windows (primary), future Linux/macOS support
-- **Assets**: Pragmatic mix with Git LFS
-- **Terrain**: swisstopo 1:1 base with artistic cleaning
-- **Rails**: Standard gauge only for V1
-- **Code**: Blueprint-first with targeted C++ where needed
-- **Repo**: Git with LFS, structured directory layout
-- **Build**: Minimal scaffold initially
+Baue **kein großes Zugsimulationsspiel**, sondern einen **editor-first Authoring Slice** in Unreal 5.5:
 
-## Implementation Tasks (Create as Child Tasks)
+1. **Terrain + Look**
+2. **Track-Authoring**
+3. **Simple scenic train run**
+4. **Repo / Build / Doku sauberziehen**
 
-### 1. Landscape System [swisstrain-terrain]
-- Implement terrain generation from real Swiss elevation data
-- Create sculpting tools for artistic enhancement
-- Develop texturing system with material layers
-- Integrate LOD system for performance
+## Reihenfolge
 
-### 2. Rail System [swisstrain-track]
-- Build track placement and editing framework
-- Implement standard gauge support (1435mm) for V1
-- Create basic train physics simulation
-- Develop track validation tools
+### Phase 1 — Terrain Slice (`swisstrain-terrain`)
 
-### 3. Editor Tools [swisstrain-editor]
-- Design landscape sculpting UI
-- Create rail placement interface
-- Build asset management panel
-- Implement preview and simulation controls
+Erstes Zielbild:
 
-### 4. Core Infrastructure [swisstrain-integrator]
-- Set up Git LFS configuration
-- Create project directory structure
-- Implement minimal build automation scripts
-- Configure CI/CD pipeline
-- Document developer setup process
+- Terrain aus dem definierten swisstopo-Ausschnitt vorbereitet
+- atmosphärische, gemütliche Schweizer Bergszene
+- Wasser, Vegetation, Material-Layer, Lichtstimmung
+- Review-fähiger Slice im Unreal Editor
 
-## Technical Constraints
-- Support 100km² landscapes
-- Handle 100km rail networks
-- Maintain 60 FPS on RTX 3070 class hardware
-- Use blueprint-first with targeted C++ architecture
-- Follow established Unreal best practices
+Falls nötig, darf diese Phase auch ein **minimales Unreal-5.5-Projektgerüst** anlegen, damit die Landschaft überhaupt authorbar wird.
 
-## Dependencies
-All systems should integrate with the Unreal Editor as the primary authoring environment. Runtime components should be optional enhancements rather than requirements for core functionality.
+### Phase 2 — Track Editor (`swisstrain-track`)
+
+Zweites Zielbild:
+
+- angenehm benutzbarer In-Editor-Trassee-Workflow
+- Splines, Station-Anker, Brücke/Tunnel/Einschnitt/Damm-Heuristik
+- klar sichtbar: man baut eine Bahnlinie auf dieser Landschaft
+
+### Phase 3 — Train Run (`swisstrain-sim`)
+
+Drittes Zielbild:
+
+- ein oder mehrere Züge fahren die gebauten Strecken ab
+- Stops funktionieren
+- die Fahrt sieht gut aus und macht Spaß
+
+### Phase 4 — Integration (`swisstrain-integrator`)
+
+Abschlussziel:
+
+- Repo sauber strukturiert
+- Git LFS aktiv
+- minimale Build-/CI-/Setup-Basis gelegt
+- Dokumentation für spätere externe Build-Machine vorhanden
+
+## Qualitätsmaßstab
+
+V1 ist erfolgreich, wenn:
+
+- die Landschaft bereits schön wirkt
+- der Editor-Workflow Freude macht
+- ein Zug sichtbar durch die gebaute Welt fährt
+- das Repo nicht chaotisch ist
+
+V1 ist **nicht** daran zu messen, wie vollständig oder realistisch die Simulation ist.
+
+## Technische Leitlinien
+
+- Unreal Engine 5.5
+- Windows-first
+- Blueprint-first, C++ selektiv
+- Git LFS für Binärdaten
+- pragmatische Assets erlaubt
+- Terraindaten auf swisstopo-Basis
+- Remote-Build/Authoring auf separater Windows-Maschine vorbereiten
+- dieser Linux-Host ist Orchestrierungs-, Daten- und Prep-Host, nicht der finale Windows-Build-Host
+
+## Übergaberegeln zwischen Phasen
+
+### Phase 1 → 2
+
+Track-Editor startet erst, wenn ein brauchbarer Landschafts-Slice mit klarer Material-/Topografie-Basis vorhanden ist.
+
+### Phase 2 → 3
+
+Simulation startet erst, wenn mindestens eine authorbare und befahrbare Strecke samt einfachen Stops existiert.
+
+### Phase 3 → 4
+
+Integration zieht erst nach, wenn Kernfunktionalität sichtbar vorhanden ist.
