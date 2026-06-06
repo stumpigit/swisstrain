@@ -111,7 +111,7 @@ $env:UE_PATH = 'D:\Epic\UE_5.5'
 
 Das Skript macht zwei Dinge:
 
-1. `GenerateProjectFiles.bat`
+1. `Build.bat -projectfiles -project=... -game -rocket -progress`
 2. `Build.bat SwisstrainEditor Win64 Development`
 
 ## 8. Projekt im Editor öffnen
@@ -149,10 +149,31 @@ Im Unreal Editor:
 
 ### Unreal wird nicht gefunden
 
-Wenn `build.bat` Unreal nicht findet:
+Wichtig: `UE_PATH` muss auf den **UE-Root** zeigen, also auf den Ordner, der direkt den Unterordner `Engine` enthält.
+
+Beispiele für korrekte Werte:
 
 ```powershell
-$env:UE_PATH = 'D:\Epic\UE_5.5'
+$env:UE_PATH = 'D:\Epic Games\UE_5.5'
+# oder
+$env:UE_PATH = 'D:\Program Files\Epic Games\UE_5.5'
+```
+
+Schnelltest im PowerShell-Fenster:
+
+```powershell
+Test-Path "$env:UE_PATH\Engine\Build\BatchFiles\Build.bat"
+```
+
+Wenn das `False` ergibt, ist der Pfad falsch. Dann suche den echten UE-Ordner so:
+
+```powershell
+Get-ChildItem D:\ -Directory -Recurse -Filter UE_5.5 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
+```
+
+Danach erneut:
+
+```powershell
 .\Scripts\Build\build.bat
 ```
 
