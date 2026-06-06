@@ -30,7 +30,7 @@ HEADER_KEYS = {
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Convert swisstopo/ESRI ASCII grid data into Unreal-compatible 16-bit RAW heightmaps."
+        description="Convert swisstopo/ESRI ASCII grid data into Unreal-compatible 16-bit R16 heightmaps."
     )
     parser.add_argument("input_file", help="Path to input ASCII grid (.asc) file")
     parser.add_argument("output_dir", help="Directory for generated RAW + metadata files")
@@ -141,7 +141,7 @@ def main() -> int:
     raw, stats = normalize_to_uint16(resized, args.z_scale)
 
     base = output_dir / args.output_name
-    raw_path = base.with_suffix(".raw")
+    raw_path = base.with_suffix(".r16")
     meta_path = base.with_suffix(".json")
 
     raw.tofile(raw_path)
@@ -152,7 +152,7 @@ def main() -> int:
         "source_metadata": metadata,
         "stats": stats,
         "unreal_notes": {
-            "format": "16-bit little-endian RAW",
+            "format": "16-bit grayscale r16 (little-endian)",
             "import_width": target_w,
             "import_height": target_h,
         },

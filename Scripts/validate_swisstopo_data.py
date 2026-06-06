@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Validate swisstopo/terrain source files and generated RAW heightmaps.
+"""Validate swisstopo/terrain source files and generated R16/RAW heightmaps.
 
 Examples:
     python Scripts/validate_swisstopo_data.py input.asc --type asc
-    python Scripts/validate_swisstopo_data.py Content/Landscape/Heightmaps/processed_heightmap.raw --type raw --size 2049x2049
+    python Scripts/validate_swisstopo_data.py Content/Landscape/Heightmaps/processed_heightmap.r16 --type raw --size 2017x2017
 """
 
 from __future__ import annotations
