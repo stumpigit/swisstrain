@@ -1,1 +1,18 @@
-[{'Target)': 'base(Target)\n\t{\n\t\tPCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;\n\t\n\t\tPublicDependencyModuleNames.AddRange(new string[] {'}, {}, 'PrivateDependencyModuleNames.Add("OnlineSubsystem']
+using UnrealBuildTool;
+
+public class Swisstrain : ModuleRules
+{
+    public Swisstrain(ReadOnlyTargetRules Target) : base(Target)
+    {
+        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+
+        PublicDependencyModuleNames.AddRange(new string[]
+        {
+            "Core",
+            "CoreUObject",
+            "Engine",
+            "InputCore",
+            "EnhancedInput"
+        });
+    }
+}

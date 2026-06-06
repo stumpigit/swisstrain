@@ -1,131 +1,182 @@
 # Swisstrain Windows Build Host Setup Guide
 
-## Overview
+Stand: 2026-06-06
 
-This guide describes how to set up a Windows host for building and authoring the Swisstrain Unreal Engine project. The Linux Hermes host is responsible for preparation work, while the Windows host handles the actual Unreal Engine authoring and packaging.
+## Ziel
 
-## Prerequisites
+Diese Anleitung richtet einen **separaten Windows-Rechner** so ein, dass du das aktuelle Swisstrain-Projekt mit **Unreal Engine 5.5** öffnen und den **Editor-Build** lokal erzeugen kannst.
 
-1. Windows 10 or Windows 11
-2. Unreal Engine 5.5 installed
-3. Git for Windows
-4. Git LFS
+Der Linux-Hermes-Host bleibt für Orchestrierung, Repo und Datenvorverarbeitung zuständig. Der Windows-Rechner ist der **Unreal-Authoring- und Build-Host**.
 
-## Setup Steps
+## Wichtig zum aktuellen Projektstand
 
-### 1. Install Unreal Engine 5.5
+Der aktuelle buildbare Basisstand ist bewusst **minimal**:
 
-1. Download Epic Games Launcher from https://www.unrealengine.com/download
-2. Install Epic Games Launcher
-3. Open Epic Games Launcher and go to Unreal Engine tab
-4. Install Unreal Engine 5.5
+- aktives Unreal-Projektmodul: `Swisstrain`
+- zusätzliche Verzeichnisse `Source/SwisstrainLandscape/` und `Source/SwisstrainRail/` sind derzeit **Scaffolding / Referenzmaterial**
+- diese Zusatzmodule sind **noch nicht** in die aktive Projektkonfiguration eingehängt
+- damit bleibt der Windows-Build stabil, obwohl spätere Feature-Module noch in Arbeit sind
 
-### 2. Install Git for Windows
+## Voraussetzungen
 
-1. Download Git for Windows from https://git-scm.com/download/win
-2. Install Git with default settings
-3. Make sure Git Bash is installed
+- Windows 10 oder Windows 11
+- Unreal Engine 5.5
+- Visual Studio 2022
+- Git for Windows
+- Git LFS
+- Python 3.11 oder ähnlich
 
-### 3. Install Git LFS
+## 1. Visual Studio 2022 installieren
 
-1. Open Git Bash or Command Prompt
-2. Run the following command:
-   ```
-   git lfs install
-   ```
+Installiere Visual Studio 2022 und aktiviere mindestens diese Workloads:
 
-### 4. Clone the Repository
+- **Desktop development with C++**
+- **Game development with C++**
+- **.NET desktop development**
 
-1. Open Git Bash or Command Prompt
-2. Navigate to your desired workspace directory
-3. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd swisstrain
-   ```
-4. Pull LFS files:
-   ```
-   git lfs pull
-   ```
+Zusätzlich empfohlen:
 
-### 5. Verify Project Structure
+- aktuelles Windows 10/11 SDK
+- C++ profiling tools
+- C++ AddressSanitizer
 
-Ensure the following directories exist:
-- `Content/` - Contains all assets
-- `Source/` - Contains C++ code
-- `Scripts/` - Contains processing and build scripts
+## 2. Unreal Engine 5.5 installieren
 
-### 6. Open Project in Unreal Engine
+1. Epic Games Launcher installieren
+2. Im Launcher **Unreal Engine 5.5** installieren
+3. Standardpfad merken, typischerweise:
 
-1. Launch Unreal Engine 5.5
-2. Open the project by selecting the `Swisstrain.uproject` file
-3. Allow Unreal Engine to compile any necessary modules
-
-## Build Process
-
-### Manual Build
-
-1. Open Command Prompt or PowerShell
-2. Navigate to the project directory
-3. Run the build script:
-   ```
-   Scripts\Build\build.bat
-   ```
-
-### Packaging
-
-1. In Unreal Engine Editor, go to File > Package Project
-2. Select target platform (Windows)
-3. Choose output directory
-4. Start packaging process
-
-## Directory Conventions
-
-### Asset Storage
-
-- `Content/Landscape/` - Terrain and landscape assets
-- `Content/Rail/` - Rail system assets
-- `Content/Maps/` - Map files
-
-### Code Structure
-
-- `Source/SwisstrainLandscape/` - Landscape system module
-- `Source/SwisstrainRail/` - Rail system module
-
-## LFS Configuration
-
-The repository uses Git LFS for large binary files:
-- Textures (*.png, *.jpg, *.tga, etc.)
-- Meshes (*.fbx, *.obj, etc.)
-- Unreal binary assets (*.uasset, *.umap)
-- Audio files (*.wav, *.mp3, *.ogg)
-
-Always run `git lfs pull` after cloning or pulling to ensure all LFS files are downloaded.
-
-## Troubleshooting
-
-### Git LFS Issues
-
-If LFS files are not downloading:
-```
-git lfs pull
+```text
+C:\Program Files\Epic Games\UE_5.5
 ```
 
-If LFS is not installed:
+Wenn dein Unreal-Pfad anders ist, setzt du später die Umgebungsvariable `UE_PATH`.
+
+## 3. Git, Git LFS und Python installieren
+
+In PowerShell als Administrator:
+
+```powershell
+winget install Git.Git
+winget install GitHub.GitLFS
+winget install Python.Python.3.11
 ```
+
+Danach neues Terminal öffnen.
+
+## 4. Repository klonen
+
+```powershell
+mkdir C:\dev -Force
+cd C:\dev
+git clone https://github.com/stumpigit/swisstrain.git
+cd .\swisstrain
 git lfs install
 git lfs pull
 ```
 
-### Unreal Engine Compilation Issues
+## 5. Python-Umgebung für Terrain-Skripte anlegen
 
-1. Delete `Binaries/` folder
-2. Delete `Intermediate/` folder
-3. Reopen project in Unreal Engine
+```powershell
+cd C:\dev\swisstrain
+py -3 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install numpy scipy
+```
 
-### Missing Modules
+## 6. Hilfsskripte testen
 
-If Unreal Engine complains about missing modules:
-1. Go to Edit > Plugins
-2. Enable any disabled plugins related to the project
-3. Restart Unreal Engine
+```powershell
+python .\Scripts\process_swisstopo_data.py --help
+python .\Scripts\validate_swisstopo_data.py --help
+```
+
+## 7. Unreal-Projektdateien generieren und Editor bauen
+
+### Variante A — Standardpfad für Unreal
+
+```powershell
+cd C:\dev\swisstrain
+.\Scripts\Build\build.bat
+```
+
+### Variante B — Unreal liegt an anderem Ort
+
+```powershell
+cd C:\dev\swisstrain
+$env:UE_PATH = 'D:\Epic\UE_5.5'
+.\Scripts\Build\build.bat
+```
+
+Das Skript macht zwei Dinge:
+
+1. `GenerateProjectFiles.bat`
+2. `Build.bat SwisstrainEditor Win64 Development`
+
+## 8. Projekt im Editor öffnen
+
+Nach erfolgreichem Build:
+
+```powershell
+& "C:\Program Files\Epic Games\UE_5.5\Engine\Binaries\Win64\UnrealEditor.exe" "C:\dev\swisstrain\Swisstrain.uproject"
+```
+
+Oder per Doppelklick auf `Swisstrain.uproject`.
+
+## 9. Terrain-Daten vorbereiten
+
+Wenn du bereits eine swisstopo-ASCII-Grid-Datei hast:
+
+```powershell
+mkdir .\Content\Landscape\Heightmaps -Force
+python .\Scripts\process_swisstopo_data.py .\input.asc .\Content\Landscape\Heightmaps --width 2049 --height 2049
+python .\Scripts\validate_swisstopo_data.py .\Content\Landscape\Heightmaps\processed_heightmap.raw --type raw --size 2049x2049
+```
+
+## 10. Terrain importieren
+
+Im Unreal Editor:
+
+1. `Landscape Mode`
+2. `Create`
+3. `Import from File`
+4. RAW-Datei wählen
+5. `2049 x 2049` als Importauflösung verwenden
+6. Material / Water / Foliage später schrittweise ergänzen
+
+## 11. Häufige Probleme
+
+### Unreal wird nicht gefunden
+
+Wenn `build.bat` Unreal nicht findet:
+
+```powershell
+$env:UE_PATH = 'D:\Epic\UE_5.5'
+.\Scripts\Build\build.bat
+```
+
+### Git-LFS-Dateien fehlen
+
+```powershell
+git lfs install
+git lfs pull
+```
+
+### Editor-Build schlägt fehl und du willst sauber neu starten
+
+```powershell
+Remove-Item .\Binaries -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item .\Intermediate -Recurse -Force -ErrorAction SilentlyContinue
+.\Scripts\Build\build.bat
+```
+
+## 12. Was dieser Build bewusst noch nicht tut
+
+Der aktuelle Basisschritt stellt sicher, dass:
+
+- die Unreal-Projekthülle gültig ist
+- die Visual-Studio-Projektdateien erzeugt werden können
+- `SwisstrainEditor` auf Windows buildbar ist
+
+Die späteren Landschafts-, Gleis- und Simulationsmodule werden danach schrittweise wieder sauber eingehängt, sobald sie jeweils verifiziert sind.

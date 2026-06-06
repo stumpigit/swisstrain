@@ -1,89 +1,77 @@
-# Swisstrain Terrain Prototype
+# Swisstrain
 
-This directory contains the initial documentation and structure for the Swisstrain terrain prototype implementation.
+Swisstrain ist ein **editor-first Unreal-5.5-Prototyp** für eine Schweizer Landschafts- und Bahn-Sandbox.
 
-## Current Status
+Ziel von V1 ist **nicht** ein kompletter Tycoon, sondern eine saubere Basis für:
 
-The task to "Build beautiful Swiss terrain prototype" has been analyzed and substantial preparatory work has been completed. The implementation is partially blocked by missing dependencies but significant progress has been made on data pipeline and processing workflows.
+- schöne Schweizer Landschaften
+- swisstopo-basierte Terrain-Vorbereitung
+- späteres Track-/Stations-Authoring
+- später einfache Zugbewegung
+- Windows-Authoring und Windows-Build auf separater Maschine
 
-## Documentation Created
+## Aktueller Status
 
-1. `docs/swisstrain-bootstrap.md` - Project bootstrap documentation
-2. `docs/swisstrain-v1-spec.md` - V1 specification document
-3. `docs/v1-implementation-brief.md` - Implementation brief with task breakdown
-4. `docs/terrain-prototype-plan.md` - Implementation plan for the terrain prototype
-5. `docs/terrain-requirements.md` - System requirements for Unreal Engine 5.5 development
-6. `docs/blocking-issues.md` - Current blocking issues preventing progress
-7. `docs/assumptions-and-gaps.md` - Documented assumptions and identified gaps
-8. `docs/implementation-approach.md` - Detailed approach for implementation
-9. `docs/swisstopo-data-processing.md` - Swisstopo data access and processing guide
-10. `docs/import-runbook.md` - Import and configuration runbook
+Der aktuelle Repo-Stand enthält einen **minimal buildbaren Unreal-Basisstand** für Windows:
 
-## Scripts Created
+- gültige `Swisstrain.uproject`
+- gültige Unreal-Targets
+- ein aktives Primärmodul `Swisstrain`
+- Windows-Build-Wrapper unter `Scripts/Build/build.bat`
 
-1. `Scripts/process_swisstopo_data.py` - Main processing script for swisstopo data
-2. `Scripts/validate_swisstopo_data.py` - Data validation utilities
-3. `Scripts/watch_phase1_and_start_phase2.py` - Board automation helper for phase progression
+Zusätzliche Verzeichnisse wie:
 
-## Project Structure Created
+- `Source/SwisstrainLandscape/`
+- `Source/SwisstrainRail/`
 
-1. `Swisstrain.uproject` - Basic Unreal Engine project file
-2. `Content/Landscape/` - Directory structure for landscape assets:
-   - `Heightmaps/` - For terrain heightmap data
-   - `Materials/` - For landscape materials
-   - `Textures/` - For landscape textures
-   - `Water/` - For water system assets
-   - `Foliage/` - For vegetation assets
-3. `Content/Maps/` - Directory for level files
-4. `Source/SwisstrainLandscape/` - Landscape system module
-5. `Source/SwisstrainRail/` - Rail system module
+bleiben aktuell als **Scaffolding / Referenzmaterial** im Repo, sind aber **noch nicht** in die aktive Projektkonfiguration eingehängt. Dadurch bleibt der Editor-Build stabil, während die späteren Feature-Module separat bereinigt werden.
 
-## Created Directories
+## Voraussetzungen für den Windows-Build
 
-```
-/root/workspace/swisstrain/
-├── Content/
-│   ├── Landscape/
-│   │   ├── Heightmaps/
-│   │   ├── Materials/
-│   │   ├── Textures/
-│   │   ├── Water/
-│   │   └── Foliage/
-│   └── Maps/
-├── Source/
-│   ├── SwisstrainLandscape/
-│   └── SwisstrainRail/
-├── Scripts/
-└── docs/
+- Windows 10/11
+- Unreal Engine 5.5
+- Visual Studio 2022
+- Git + Git LFS
+- Python 3.11
+
+## Schnellstart auf Windows
+
+```powershell
+git clone https://github.com/stumpigit/swisstrain.git
+cd swisstrain
+git lfs install
+git lfs pull
+.\Scripts\Build\build.bat
 ```
 
-## Completed Work (Non-Engine Dependent)
+Eine ausführliche Schritt-für-Schritt-Anleitung steht hier:
 
-1. **Swisstopo Data Pipeline Documentation** - Complete workflow for acquiring and processing swisstopo height data
-2. **Data Processing Scripts** - Python scripts for converting swisstopo ASCII grid data to Unreal Engine compatible formats
-3. **Validation Tools** - Scripts to validate processed data before import
-4. **Import Runbook** - Detailed step-by-step guide for importing terrain into Unreal Engine
-5. **Bounding Box Analysis** - Confirmation of target area coordinates in EPSG:2056 system
-6. **Project Structure** - Complete directory structure and basic project files
+- `docs/windows-build-host-setup.md`
 
-## Blocking Issues
+## Terrain-/swisstopo-Skripte
 
-1. **Unreal Engine 5.5 is not installed** - This is required for actual terrain creation and testing
-2. **No actual swisstopo data acquired** - Need to download real data for the defined bounding box
+Vorhanden und unabhängig vom Unreal-Build nutzbar:
 
-## Next Steps
+- `Scripts/process_swisstopo_data.py`
+- `Scripts/validate_swisstopo_data.py`
 
-1. Install Unreal Engine 5.5
-2. Acquire actual swisstopo terrain data for our bounding box
-3. Test data processing pipeline with real swisstopo data
-4. Import terrain data into Unreal Engine
-5. Implement artistic enhancement workflows
-6. Add water, vegetation, and atmosphere systems
-7. Create reviewable scene focused on beauty
+Beispiel:
 
-## Files Modified/Updated
+```powershell
+python .\Scripts\process_swisstopo_data.py .\input.asc .\Content\Landscape\Heightmaps --width 2049 --height 2049
+python .\Scripts\validate_swisstopo_data.py .\Content\Landscape\Heightmaps\processed_heightmap.raw --type raw --size 2049x2049
+```
 
-- `docs/swisstopo-data-processing.md` - New comprehensive guide to swisstopo data processing
-- `Scripts/process_swisstopo_data.py` - Enhanced processing script with full swisstopo support
-- `Scripts/validate_swisstopo_data.py` - New validation tools for processed data
-- `docs/import-runbook.md` - Complete import guide for team reference
+## Relevante Doku
+
+- `docs/swisstrain-bootstrap.md`
+- `docs/swisstrain-v1-spec.md`
+- `docs/v1-implementation-brief.md`
+- `docs/remote-build-architecture.md`
+- `docs/windows-build-host-setup.md`
+- `docs/import-runbook.md`
+
+## Architekturhinweis
+
+- **Linux-Hermes-Host**: Orchestrierung, Repo, Doku, Vorverarbeitung
+- **Windows-Host**: Unreal Editor, Build, Cook, Package

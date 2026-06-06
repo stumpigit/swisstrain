@@ -1,116 +1,112 @@
 # Swisstrain Project Integration Guide
 
-## Overview
+Stand: 2026-06-06
 
-This document describes the integrated structure of the Swisstrain project, including repository organization, documentation, build skeleton, and validation steps. This integration prepares the project for clean transfer to an external Windows build machine.
+## Zielbild
 
-## Repository Structure
+Das Repository ist so organisiert, dass der **Linux-Hermes-Host** die Vorbereitung übernimmt und ein **separater Windows-Rechner** die eigentliche Unreal-Editor- und Windows-Build-Arbeit ausführt.
 
-The repository is organized to support clean separation between Linux preparation work and Windows build work:
+## Host-Rollen
 
+### Linux-Hermes-Host
+
+Verantwortlich für:
+
+- Repo-Verwaltung
+- Dokumentation
+- swisstopo-Datenbeschaffung
+- Terrain-/Heightmap-Vorverarbeitung
+- Skripte, Konvertierung und Validierung
+- Multi-Agent-Orchestrierung
+
+### Windows Build/Authoring Host
+
+Verantwortlich für:
+
+- Unreal Engine 5.5 Installation
+- Visual Studio 2022 Toolchain
+- Generierung der Projektdateien
+- Build von `SwisstrainEditor`
+- Öffnen des Projekts im Unreal Editor
+- später Cook/Package für Windows
+
+## Aktiver Build-Stand
+
+Der aktuell stabile Build-Stand ist bewusst konservativ:
+
+- aktives Projektmodul: `Swisstrain`
+- aktive Unreal-Dateien:
+  - `Swisstrain.uproject`
+  - `Source/Swisstrain.Target.cs`
+  - `Source/SwisstrainEditor.Target.cs`
+  - `Source/Swisstrain/Swisstrain.Build.cs`
+  - `Source/Swisstrain/Public/Swisstrain.h`
+  - `Source/Swisstrain/Private/Swisstrain.cpp`
+  - `Scripts/Build/build.bat`
+
+Zusätzliche Quellbäume wie `Source/SwisstrainLandscape/` und `Source/SwisstrainRail/` bleiben aktuell als **Scaffolding / Referenzmaterial** im Repo, sind aber noch nicht in die aktive Projektkonfiguration eingehängt. Dadurch blockieren halbfertige Feature-Module den Windows-Build nicht.
+
+## Repository-Struktur
+
+```text
+swisstrain/
+├── Content/
+├── Docs/
+├── Scripts/
+│   ├── Build/
+│   │   ├── build.bat
+│   │   └── build.sh
+│   ├── process_swisstopo_data.py
+│   └── validate_swisstopo_data.py
+├── Source/
+│   ├── Swisstrain/
+│   ├── Swisstrain.Target.cs
+│   ├── SwisstrainEditor.Target.cs
+│   ├── SwisstrainLandscape/   # noch nicht aktiv eingebunden
+│   └── SwisstrainRail/        # noch nicht aktiv eingebunden
+├── docs/
+├── .gitattributes
+├── .gitignore
+└── Swisstrain.uproject
 ```
-/root/workspace/swisstrain/
-├── Content/                    # All Unreal Engine assets
-│   ├── Landscape/             # Terrain system assets
-│   │   ├── Heightmaps/        # Terrain heightmap data
-│   │   ├── Materials/         # Landscape materials
-│   │   ├── Textures/          # Landscape textures
-│   │   ├── Water/             # Water system assets
-│   │   └── Foliage/           # Vegetation assets
-│   ├── Rail/                  # Rail system assets
-│   └── Maps/                  # Level files
-├── Source/                    # C++ source code
-│   ├── SwisstrainLandscape/   # Landscape system module
-│   └── SwisstrainRail/        # Rail system module
-├── Scripts/                   # Processing and build scripts
-│   ├── Build/                 # Build scripts for Linux and Windows
-│   │   ├── build.sh           # Linux build script
-│   │   └── build.bat          # Windows build script
-│   └── validate_project_structure.sh  # Project validation script
-├── docs/                      # Documentation
-│   └── windows-build-host-setup.md    # Windows build host setup guide
-├── .github/                   # GitHub workflows
-│   └── workflows/             # CI/CD workflows
-├── .gitattributes             # Git LFS configuration
-├── .gitignore                 # Git ignore patterns
-├── README.md                  # Project overview
-└── Swisstrain.uproject        # Unreal Engine project file
-```
 
-## Git LFS Configuration
+## Git LFS
 
-The repository uses Git LFS (Large File Storage) for binary assets to keep the repository lightweight while maintaining references to large files. The following file types are configured for LFS:
+Git LFS ist aktiv für:
 
-- Textures: *.png, *.jpg, *.jpeg, *.tga, *.bmp, *.tif, *.tiff
-- Meshes: *.fbx, *.obj, *.dae
-- Heightmaps and large data files: *.raw, *.exr, *.iff, *.resS, *.resA
-- Unreal binary assets: *.uasset, *.umap
-- Audio files: *.wav, *.mp3, *.ogg
+- Texturen
+- Meshes
+- RAW-Heightmaps
+- `.uasset`
+- `.umap`
+- Audiodateien
 
-Always run `git lfs pull` after cloning or pulling to ensure all LFS files are downloaded.
+Nach jedem Clone/Pull:
 
-## Build System
-
-The project includes build scripts for both Linux (placeholder) and Windows (target) environments:
-
-- `Scripts/Build/build.sh` - Linux build script
-- `Scripts/Build/build.bat` - Windows build script
-
-Both are placeholders for the actual build process which will integrate with Unreal Engine's build system.
-
-## Documentation
-
-Key documentation includes:
-
-1. `README.md` - Project overview and status
-2. `docs/windows-build-host-setup.md` - Guide for setting up Windows build environment
-3. All previous phase documentation in the `docs/` directory
-
-## CI/CD Integration
-
-The project includes a GitHub Actions workflow configuration for automated builds:
-
-- `.github/workflows/build.yml` - Build pipeline configuration
-
-This workflow:
-1. Checks out code with LFS support
-2. Sets up Git LFS
-3. Sets up the build environment
-4. Runs the build script
-5. Runs tests
-6. Packages the project
-
-## Validation
-
-The project includes a validation script to ensure proper structure:
-
-- `Scripts/validate_project_structure.sh` - Checks for required directories and files
-
-Run this script to verify the project structure is complete:
 ```bash
-./Scripts/validate_project_structure.sh
+git lfs pull
 ```
 
-## Integration with External Build Machine
+## Windows-Build-Einstieg
 
-This integration prepares the project for transfer to an external Windows build machine by:
+Der empfohlene erste Build auf Windows ist:
 
-1. Maintaining clean separation between preparation and build work
-2. Providing clear documentation for Windows setup
-3. Including both Linux and Windows build scripts
-4. Ensuring proper Git LFS configuration for large asset handling
-5. Providing validation tools to verify project integrity
+```powershell
+cd C:\dev\swisstrain
+.\Scripts\Build\build.bat
+```
 
-The Linux Hermes host is responsible for:
-- Repo management
-- Documentation
-- Data acquisition and preprocessing
-- Script development and validation
-- Project preparation for Windows transfer
+Details dazu stehen in:
 
-The Windows build host is responsible for:
-- Unreal Engine 5.5 installation
-- Opening and editing the Unreal project
-- Importing assets
-- Look development in the editor
-- Build, cook, and package for Windows
+- `docs/windows-build-host-setup.md`
+
+## Nächste Integrationsschritte
+
+Nach dem stabilen Basis-Build werden die Feature-Module kontrolliert wieder aktiviert:
+
+1. Landscape-Modul bereinigen und validieren
+2. Rail-/Track-Modul bereinigen und validieren
+3. Simulation einkoppeln
+4. Packaging-/UAT-Skripte erweitern
+
+Damit bleibt jeder Zwischenschritt auf Windows nachvollziehbar und buildbar.

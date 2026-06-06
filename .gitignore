@@ -1,3 +1,13 @@
 .watch_phase_state.json
 __pycache__/
 *.pyc
+
+# Unreal generated/build artifacts
+.vs/
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+*.VC.db
+*.VC.opendb
+*.sln

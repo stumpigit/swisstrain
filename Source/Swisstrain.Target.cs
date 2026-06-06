@@ -1,1 +1,13 @@
-{'Target)': 'base(Target)\n\t{\n\t\tType = TargetType.Game;\n\t\tDefaultBuildSettings = BuildSettingsVersion.V2;\n\t\tIncludeOrderVersion = EngineVersion.Version.Meta;\n\t\tExtraModuleNames.Add(', 'Swisstrain': ''}
+using UnrealBuildTool;
+using System.Collections.Generic;
+
+public class SwisstrainTarget : TargetRules
+{
+    public SwisstrainTarget(TargetInfo Target) : base(Target)
+    {
+        Type = TargetType.Game;
+        DefaultBuildSettings = BuildSettingsVersion.Latest;
+        IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+        ExtraModuleNames.AddRange(new string[] { "Swisstrain" });
+    }
+}
