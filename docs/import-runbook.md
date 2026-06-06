@@ -25,12 +25,12 @@ Before importing into Unreal Engine, you must process the raw swisstopo data:
 
 2. Use the processing script to convert the data:
    ```
-   python Scripts/process_swisstopo_data.py input.asc Content/Landscape/Heightmaps/ --width 2049 --height 2049
+   python Scripts/process_swisstopo_data.py input.asc Content/Landscape/Heightmaps/ --width 2017 --height 2017
    ```
 
 3. Validate the processed data:
    ```
-   python Scripts/validate_swisstopo_data.py Content/Landscape/Heightmaps/processed_heightmap.raw --type raw --size 2049x2049
+   python Scripts/validate_swisstopo_data.py Content/Landscape/Heightmaps/processed_heightmap.raw --type raw --size 2017x2017
    ```
 
 ## Unreal Engine Import Process
@@ -47,7 +47,7 @@ Before importing into Unreal Engine, you must process the raw swisstopo data:
 
 1. Set Import Type to "Heightfield"
 2. Click "Browse..." and select your processed heightmap RAW file
-3. Set Import Resolution to match your processed data (e.g., 2049x2049)
+3. Set Import Resolution to match your processed data (e.g., 2017x2017)
 4. Configure the following settings:
    - **Component Size**: 63 (adjust based on your needs)
    - **Subsection Size**: 64
@@ -65,8 +65,8 @@ Based on our target area dimensions:
 Settings to configure in the Landscape tool:
 - **Location X**: 0 (or appropriate world position)
 - **Location Y**: 0 (or appropriate world position)
-- **Scale X**: 7.6 (approximately 15529.14m / 2049 pixels)
-- **Scale Y**: 6.1 (approximately 12437.55m / 2049 pixels)
+- **Scale X**: 7.7 (approximately 15529.14m / 2017 pixels)
+- **Scale Y**: 6.2 (approximately 12437.55m / 2017 pixels)
 - **Scale Z**: 1.0 (or adjust for vertical exaggeration)
 
 #### Vertical Scaling

@@ -58,8 +58,8 @@ Vorhanden und unabhängig vom Unreal-Build nutzbar:
 Beispiel:
 
 ```powershell
-python .\Scripts\process_swisstopo_data.py .\input.asc .\Content\Landscape\Heightmaps --width 2049 --height 2049
-python .\Scripts\validate_swisstopo_data.py .\Content\Landscape\Heightmaps\processed_heightmap.raw --type raw --size 2049x2049
+python .\Scripts\process_swisstopo_data.py .\input.asc .\Content\Landscape\Heightmaps --width 2017 --height 2017
+python .\Scripts\validate_swisstopo_data.py .\Content\Landscape\Heightmaps\processed_heightmap.raw --type raw --size 2017x2017
 ```
 
 ## Relevante Doku

@@ -130,8 +130,8 @@ Wenn du bereits eine swisstopo-ASCII-Grid-Datei hast:
 
 ```powershell
 mkdir .\Content\Landscape\Heightmaps -Force
-python .\Scripts\process_swisstopo_data.py .\input.asc .\Content\Landscape\Heightmaps --width 2049 --height 2049
-python .\Scripts\validate_swisstopo_data.py .\Content\Landscape\Heightmaps\processed_heightmap.raw --type raw --size 2049x2049
+python .\Scripts\process_swisstopo_data.py .\input.asc .\Content\Landscape\Heightmaps --width 2017 --height 2017
+python .\Scripts\validate_swisstopo_data.py .\Content\Landscape\Heightmaps\processed_heightmap.raw --type raw --size 2017x2017
 ```
 
 ## 10. Terrain importieren
@@ -142,7 +142,7 @@ Im Unreal Editor:
 2. `Create`
 3. `Import from File`
 4. RAW-Datei wählen
-5. `2049 x 2049` als Importauflösung verwenden
+5. `2017 x 2017` als Importauflösung verwenden
 6. Material / Water / Foliage später schrittweise ergänzen
 
 ## 11. Häufige Probleme
