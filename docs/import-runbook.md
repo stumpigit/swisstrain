@@ -31,6 +31,7 @@ Before importing into Unreal Engine, you must process the raw swisstopo data:
 3. Validate the processed data:
    ```
    python Scripts/validate_swisstopo_data.py Content/Landscape/Heightmaps/processed_heightmap.r16 --type raw --size 2017x2017
+   # Import into Unreal using processed_heightmap.png if RAW/R16 is rejected
    ```
 
 ## Unreal Engine Import Process

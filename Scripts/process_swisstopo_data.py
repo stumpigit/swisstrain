@@ -10,6 +10,8 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import struct
+import zlib
 from pathlib import Path
 from typing import Dict, Tuple
 
@@ -123,6 +125,27 @@ def normalize_to_uint16(data: np.ndarray, z_scale: float) -> Tuple[np.ndarray, D
     return raw, stats
 
 
+def _png_chunk(chunk_type: bytes, data: bytes) -> bytes:
+    return (
+        struct.pack(">I", len(data))
+        + chunk_type
+        + data
+        + struct.pack(">I", zlib.crc32(chunk_type + data) & 0xFFFFFFFF)
+    )
+
+
+def write_png16_grayscale(path: Path, data: np.ndarray) -> None:
+    if data.dtype != np.dtype("<u2"):
+        raise ValueError("PNG writer expects uint16 little-endian source data")
+    height, width = data.shape
+    be = data.astype(">u2", copy=False)
+    scanlines = b"".join(b"\x00" + be[row].tobytes() for row in range(height))
+    compressed = zlib.compress(scanlines, level=9)
+    ihdr = struct.pack(">IIBBBBB", width, height, 16, 0, 0, 0, 0)
+    png = b"\x89PNG\r\n\x1a\n" + _png_chunk(b"IHDR", ihdr) + _png_chunk(b"IDAT", compressed) + _png_chunk(b"IEND", b"")
+    path.write_bytes(png)
+
+
 def main() -> int:
     args = parse_args()
     input_path = Path(args.input_file)
@@ -142,17 +165,22 @@ def main() -> int:
 
     base = output_dir / args.output_name
     raw_path = base.with_suffix(".r16")
+    png_path = base.with_suffix(".png")
     meta_path = base.with_suffix(".json")
 
     raw.tofile(raw_path)
+    write_png16_grayscale(png_path, raw)
     payload = {
         "source_file": str(input_path),
-        "output_raw": str(raw_path),
+        "output_r16": str(raw_path),
+        "output_png": str(png_path),
         "output_size": {"width": target_w, "height": target_h},
         "source_metadata": metadata,
         "stats": stats,
         "unreal_notes": {
-            "format": "16-bit grayscale r16 (little-endian)",
+            "preferred_import": str(png_path),
+            "alternate_import": str(raw_path),
+            "format": "16-bit grayscale PNG and 16-bit grayscale r16",
             "import_width": target_w,
             "import_height": target_h,
         },
@@ -160,6 +188,7 @@ def main() -> int:
     meta_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
     print(f"Wrote {raw_path}")
+    print(f"Wrote {png_path}")
     print(f"Wrote {meta_path}")
     print(f"Output size: {target_w}x{target_h}")
     print(f"Elevation range: {stats['min_elevation']:.2f} .. {stats['max_elevation']:.2f}")
